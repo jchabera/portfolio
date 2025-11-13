@@ -1,0 +1,969 @@
+/* --- 1. GLOBÁLNÍ NASTAVENÍ A TÉMA --- */
+:root {
+    --bg-color: #121212;
+    --surface-color: #1E1E1E;
+    --primary-text: #EAEAEA;
+    --secondary-text: #AAAAAA;
+    --accent-color: #FFFFFF;
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-strong: rgba(0, 0, 0, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color); /* Tvoje hlavní tmavá barva #121212 */
+    color: var(--primary-text);
+    overscroll-behavior-y: contain;
+    overflow-x: hidden;
+    
+    /* === PŮVODNÍ JEMNÝ TEČKOVANÝ VZOR === */
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-41c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm63 52c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-58-41c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm66 31c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-34-4c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-20 44c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm37-31c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-14-18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7z' fill='%23222' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed; /* Můžeme nechat, ať se nehýbe při scrollu */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent-color);
+}
+
+p {
+    color: var(--secondary-text);
+    line-height: 1.7;
+}
+
+section {
+    padding: 80px 5%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Styly pro Loading Screen --- */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary-text);
+    font-size: 1.2rem;
+    font-weight: 300;
+    z-index: 9999;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.7s ease-out, visibility 0.7s ease-out;
+}
+#loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid var(--accent-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+body.loading > *:not(#loading-screen) {
+    opacity: 0;
+    visibility: hidden;
+}
+/* --- Konec stylů pro Loading Screen --- */
+
+
+/* --- 2. NAVIGACE --- */
+header {
+    width: 100%;
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    /* Původní styly pro text, teď pro kontejner loga */
+    font-family: 'Oswald', sans-serif; /* Necháme pro případ, že by se logo nenačetlo */
+    font-size: 1.8rem; /* Záložní velikost textu */
+    text-decoration: none;
+    color: var(--accent-color);
+
+    /* Styly pro samotný obrázek loga */
+    display: flex; /* Aby se obrázek zarovnal vertikálně */
+    align-items: center;
+}
+
+.logo img {
+    height: 35px; /* Nastavíme pevnou výšku loga */
+    width: auto; /* Šířka se přizpůsobí automaticky */
+    display: block; /* Odstraníme nežádoucí mezery pod obrázkem */
+}
+
+/* Na mobilu možná menší logo */
+@media (max-width: 768px) {
+    .logo img {
+        height: 30px;
+    }
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+}
+nav a {
+    color: var(--primary-text);
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 5px;
+}
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+nav a:hover::after {
+    width: 100%;
+}
+
+
+/* --- 3. HERO (ÚVODNÍ) SEKCE --- */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative; 
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photos/bmwM2/_DSC6446-2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    max-width: none;
+    padding: 80px 0 0 0;
+}
+
+.hero h1 {
+    font-size: 4.5rem;
+    text-shadow: 0 4px 15px var(--shadow-strong);
+}
+.hero p {
+    font-size: 1.5rem;
+    color: var(--primary-text);
+    text-shadow: 0 2px 10px var(--shadow-strong);
+}
+.scroll-down-arrow {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.scroll-down-arrow span {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-bottom: 3px solid var(--accent-color);
+    border-right: 3px solid var(--accent-color);
+    transform: rotate(45deg);
+    animation: bounce 2s infinite;
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) rotate(45deg);
+        opacity: 1;
+    }
+    40% {
+        transform: translateY(10px) rotate(45deg);
+        opacity: 0.5;
+    }
+    60% {
+        transform: translateY(5px) rotate(45deg);
+    }
+}
+
+
+/* --- 4. PORTFOLIO (GALERIE) --- */
+.portfolio h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+.card {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px var(--shadow-light);
+    text-decoration: none;
+}
+.card:hover .card-content h3,
+.card:hover .card-content p {
+    color: var(--accent-color);
+}
+
+/* --- TOTO JSOU NOVÉ STYLY PRO PROLÍNÁNÍ --- */
+
+/* Kontejner pro dva obrázky */
+.card-image-container {
+    position: relative; /* Nutné pro absolutní pozicování obrázků */
+    width: 100%;
+    height: 250px; /* Stejná výška jako byla u .card img */
+    background-color: var(--surface-color); /* Barva pro případ pomalého načtení */
+}
+
+/* Společné styly pro oba obrázky (S OPRAVOU PLYNULOSTI) */
+.card-image-container .img-main,
+.card-image-container .img-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease-out;
+    will-change: opacity; 
+}
+
+/* Hlavní obrázek je vidět normálně */
+.card-image-container .img-main {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* Druhý obrázek je skrytý a nad ním */
+.card-image-container .img-hover {
+    opacity: 0;
+    z-index: 2;
+}
+
+/* KDYŽ NAJEDEŠ NA KARTU... */
+.card:hover .card-image-container .img-hover {
+    opacity: 1; /* ...zobrazí se druhý obrázek */
+}
+
+.card-content {
+    padding: 20px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover .card-content {
+    background-color: #2a2a2a;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+}
+.card-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    color: var(--accent-color);
+}
+.card-content p {
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+}
+
+
+/* --- 5. SEKCE O MNĚ A VÝBAVA --- */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    align-items: end; 
+}
+
+.about-grid img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 10px 20px var(--shadow-light);
+}
+
+.about-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+.gear-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 10px;
+}
+.gear-card {
+    background-color: var(--surface-color);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px var(--shadow-light);
+    border-left: 3px solid var(--accent-color);
+}
+.gear-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+
+/* --- 6. SEKCE VIDEA (FINÁLNÍ ÚPRAVA ČÍSLOVÁNÍ) --- */
+
+.video-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+.video-showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+.video-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center; /* Vertikálně na střed */
+}
+
+/* Kontejner pro text */
+.video-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    /* Akcentní linka */
+    border-left: 3px solid var(--accent-color);
+    padding-left: 25px;
+}
+
+/* === NOVÝ STYL PRO NADPIS A ČÍSLO (PODLE "02" NÁVRHU) === */
+.video-title-container {
+    display: flex; /* Aby číslo bylo vedle nadpisu */
+    align-items: flex-start; /* Zarovná je nahoru */
+    margin-bottom: 15px;
+    position: relative; /* Pro pozici čísla, pokud ho budeme chtít dát za kontejner */
+}
+
+.video-text h3 {
+    font-size: 2.2rem;
+    color: var(--accent-color);
+    margin-bottom: 0;
+    line-height: 1.1; /* Aby se číslo vešlo lépe vedle */
+}
+
+.video-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 3.5rem; /* Větší číslo */
+    font-weight: 700;
+    color: var(--secondary-text); 
+    opacity: 0.5; /* Mírně průhledné */
+    line-height: 1; /* Aby se číslo nezvedalo moc */
+    margin-left: 15px; /* Mezera od nadpisu */
+    /* ZAROVNÁNÍ */
+    position: relative;
+    top: -5px; /* Mírně posuneme nahoru pro lepší vizuální zarovnání s nadpisem */
+}
+/* === KONEC NOVÉHO STYLU === */
+
+
+.video-text p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--secondary-text);
+}
+.video-text p:last-of-type {
+    margin-top: 10px;
+}
+
+/* (Kód pro .custom-video-player, .play-overlay atd. zůstává stejný) */
+.custom-video-player {
+    position: relative;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px var(--shadow-light);
+    aspect-ratio: 9 / 16;
+    width: 100%; 
+    max-width: 380px; 
+    max-height: 70vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.custom-video-player video {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    display: block;
+}
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent; 
+    cursor: pointer;
+    opacity: 1;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    z-index: 5;
+}
+.play-overlay:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.play-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.play-button {
+    width: 60px;
+    height: 60px;
+    color: white;
+    filter: drop-shadow(0 0 15px rgba(0,0,0,0.5));
+    transition: transform 0.3s ease;
+}
+.play-overlay:hover .play-button {
+    transform: scale(1.1);
+}
+
+/* --- STŘÍDÁNÍ LAYOUTU A ZAROVNÁNÍ --- */
+.video-item:nth-child(odd) .custom-video-player {
+    justify-self: end;
+}
+.video-item:nth-child(even) .video-text {
+    grid-column: 2 / 3;
+    
+    /* Přesuneme linku na druhou stranu */
+    border-left: none;
+    padding-left: 0;
+    border-right: 3px solid var(--accent-color);
+    padding-right: 25px;
+    text-align: right; /* Zarovnáme text doprava */
+}
+.video-item:nth-child(even) .custom-video-player {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    justify-self: start;
+}
+.video-item:nth-child(even) .video-card-icon {
+    align-self: flex-end;
+}
+/* Prohodí pořadí nadpisu a čísla v sudém bloku */
+.video-item:nth-child(even) .video-title-container {
+    flex-direction: row-reverse;
+}
+/* Opraví mezeru u čísla v sudém bloku */
+.video-item:nth-child(even) .video-number {
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+/* Responzivita */
+@media (max-width: 768px) {
+    .video-item {
+        grid-template-columns: 1fr;
+    }
+    .video-text {
+        margin-bottom: 20px;
+        /* Na mobilu centrovat */
+        border-left: 3px solid var(--accent-color);
+        padding-left: 25px;
+        border-right: none;
+        padding-right: 0;
+    }
+    .video-item:nth-child(even) .video-text {
+        grid-column: 1 / -1;
+        border-right: none;
+        padding-right: 0;
+        border-left: 3px solid var(--accent-color);
+        padding-left: 25px;
+    }
+    .video-item:nth-child(even) .custom-video-player {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+    
+    /* Na mobilu centrovat a upravit velikost */
+    .video-item:nth-child(odd) .custom-video-player,
+    .video-item:nth-child(even) .custom-video-player {
+        justify-self: center;
+        max-height: 80vh;
+        max-width: 320px;
+    }
+    
+    /* Na mobilu dáme nadpis a číslo pod sebe */
+    .video-title-container {
+        flex-direction: row; /* Zpět vedle sebe */
+        justify-content: flex-start;
+        align-items: baseline;
+        gap: 0;
+        margin-bottom: 15px;
+    }
+    .video-number {
+        font-size: 3rem; /* Mírně menší na mobilu */
+        margin-left: 10px; /* Menší mezera */
+        top: 0;
+        opacity: 0.5;
+    }
+}
+
+
+/* --- 7. FOOTER (PATIČKA) --- */
+footer {
+    text-align: center;
+    padding: 40px 5%;
+    background-color: var(--surface-color);
+    margin-top: 60px;
+}
+
+
+/* --- 8. RESPONZIVITA PRO MOBILY --- */
+@media (max-width: 768px) {
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .hero h1 {
+        font-size: 3rem;
+    }
+    .hero p {
+        font-size: 1.2rem;
+    }
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+    .gear-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Responzivita pro video sekci */
+    .video-item {
+        grid-template-columns: 1fr;
+    }
+    .video-text {
+        margin-bottom: 20px;
+    }
+    .video-item:nth-child(even) .video-text {
+        grid-column: 1 / -1;
+    }
+    .video-item:nth-child(even) .video-placeholder {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+}
+
+
+/* --- 9. STYLY PRO `gallery-detail.html` --- */
+/* === STYL PRO ODKAZ "ZPĚT" === */
+.back-link {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--secondary-text); /* Tlumená barva */
+    text-decoration: none;
+    margin-bottom: 20px; /* Mezera pod odkazem */
+    transition: color 0.3s ease;
+}
+.back-link:hover {
+    color: var(--accent-color); /* Zvýrazní se při najetí */
+}
+.gallery-detail-header {
+    text-align: center;
+    padding-top: 120px; 
+    padding-bottom: 40px;
+}
+.gallery-detail-header h1 {
+    font-size: 3rem;
+}
+.gallery-date {
+    font-size: 1rem;
+    color: var(--secondary-text);
+    margin-top: 10px;
+}
+.gallery-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px;
+}
+.gallery-item img {
+    width: 100%;
+    height: 500px; /* <-- NOVÉ: Pevná výška pro všechny fotky */
+    object-fit: cover; /* <-- NOVÉ: Ořízne fotku, aby vyplnila prostor (nedeformuje ji) */
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px var(--shadow-light);
+    transition: transform 0.3s ease;
+}
+.gallery-item img:hover {
+    transform: scale(1.02);
+}
+@media (max-width: 768px) {
+    .gallery-detail-grid {
+        grid-template-columns: 1fr; 
+    }
+    .gallery-detail-header h1 {
+        font-size: 2.2rem;
+    }
+}
+
+
+/* --- 10. STYLY PRO KONTAKTNÍ STRÁNKU --- */
+nav a.active {
+    color: var(--accent-color);
+}
+nav a.active::after {
+    width: 100%;
+}
+.contact-page-header {
+    text-align: center;
+    padding-top: 120px; 
+    padding-bottom: 40px;
+}
+.contact-page-header h1 {
+    font-size: 3rem;
+}
+.contact-page-header p {
+    font-size: 1.1rem;
+    color: var(--secondary-text);
+    margin-top: 10px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.contact-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 50px;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+.form-group label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    color: var(--secondary-text);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+.form-group input,
+.form-group textarea {
+    background-color: var(--surface-color);
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 15px;
+    color: var(--primary-text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+.btn-submit {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 30px;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.btn-submit:hover {
+    background-color: #dcdcdc;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow-light);
+}
+.contact-info-container {
+    padding-left: 20px;
+    border-left: 2px solid #333;
+}
+.contact-info-container h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+.contact-info-container p {
+    font-size: 1rem;
+    line-height: 1.7;
+}
+.contact-info-item {
+    margin-top: 30px;
+}
+.contact-info-item h4 {
+    font-size: 1.2rem;
+    color: var(--secondary-text);
+    margin-bottom: 5px;
+}
+.contact-info-item a {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.contact-info-item a:hover {
+    text-decoration: underline;
+}
+
+/* Responzivita pro kontaktní stránku */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+    .contact-info-container {
+        padding-left: 0;
+        border-left: none;
+    }
+    .contact-page-header h1 {
+        font-size: 2.2rem;
+    }
+}
+
+/* --- 11. TLAČÍTKO ZPĚT NAHORU --- */
+
+.back-to-top-btn {
+    position: fixed; /* Zůstane na místě při scrollu */
+    bottom: 30px;
+    right: 30px;
+    z-index: 998; /* Pod hlavičkou, ale nad vším ostatním */
+    
+    /* Vzhled */
+    width: 50px;
+    height: 50px;
+    background-color: var(--surface-color); /* Tmavá barva */
+    color: var(--primary-text); /* Bílá šipka */
+    border-radius: 50%; /* Kulaté */
+    box-shadow: 0 5px 15px var(--shadow-strong);
+    
+    /* Vycentrování SVG uvnitř */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    
+    /* Animace a schování */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Stav, kdy je vidět */
+.back-to-top-btn.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Hover efekt */
+.back-to-top-btn:hover {
+    background-color: var(--accent-color); /* Bílé pozadí */
+    color: var(--bg-color); /* Tmavá šipka */
+}
+
+/* Velikost SVG šipky */
+.back-to-top-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor; /* Přebere barvu od rodiče (<a>) */
+}
+
+/* --- 12. STYLY PRO SEKCI SLUŽEB A CENÍK --- */
+
+.service-pricing {
+    padding: 0 5%;
+    max-width: 1300px;
+    margin: 0 auto 100px; /* Větší mezera dole */
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.service-card {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px var(--shadow-strong);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform, box-shadow;
+}
+
+
+
+.service-card h2 {
+    font-size: 1.5rem;
+    color: var(--secondary-text);
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+}
+
+.service-accent-line {
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color);
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+}
+
+.service-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1; /* Zajistí, že popisky zaberou stejnou výšku */
+}
+
+.service-features {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 20px 0;
+}
+
+.service-features li {
+    font-size: 0.95rem;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.service-features li::before {
+    content: "✓";
+    color: var(--accent-color);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.service-cta {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+}
+
+.service-cta:hover {
+    background-color: #ddd;
+}
+
+/* KARTA BRAND - ZVÝRAZNĚNÍ */
+.service-cta-primary {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.service-cta-primary:hover {
+    background-color: #fff;
+    color: #121212;
+}
+
+/* --- KONTAKTNÍ BANNER (CTA) --- */
+.service-cta-banner {
+    text-align: center;
+    background-color: var(--surface-color);
+    padding: 40px;
+    border-radius: 8px;
+    margin: 80px auto;
+    max-width: 800px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.service-cta-banner p {
+    font-size: 1.2rem;
+    color: var(--primary-text);
+    margin-bottom: 20px;
+}
+
+.service-banner-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+}
+
+

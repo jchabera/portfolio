@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Poptáváte focení nebo natáčení aut v oblasti Liberce? Kontaktujte Jakuba Chaberu pro nezávaznou cenovou nabídku a termín.">
+    <title>Kontakt | Jakub Chabera</title>
+    <link rel="icon" type="image/png" href="photos/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">
+            <img src="photos/JCHABERA.PNG.png" alt="Jakub Chabera Logo">
+        </a>
+        <nav>
+            <a href="index.html#portfolio">Portfolio</a>
+            <a href="index.html#videa">Videa</a>
+            <a href="index.html#o-mne">O mně</a>
+             <a href="sluzby.html">Služby</a> 
+            <a href="kontakt.html" class="active">Kontakt</a> 
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="contact-page-header reveal-on-scroll">
+            <h1>POJĎME TVOŘIT</h1>
+            <p>Máš zájem o focení, natáčení, nebo máš jen dotaz? Neváhej mě kontaktovat.</p>
+        </section>
+
+        <section class="contact-grid reveal-on-scroll" style="transition-delay: 0.2s;">
+        
+            <div class="contact-form-container">
+                
+                <form action="https://formspree.io/f/movyqqoy" method="POST">
+                    <div class="form-group">
+                        <label for="name">Vaše Jméno</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Váš E-mail</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Zpráva</label>
+                        <textarea id="message" name="message" rows="6" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Odeslat zprávu</button>
+                </form>
+            </div>
+            
+            <div class="contact-info-container">
+                <h3>Další možnosti</h3>
+                <p>Pokud preferuješ přímou komunikaci, můžeš mě zastihnout zde:</p>
+                
+                <div class="contact-info-item">
+                    <h4>E-mail</h4>
+                    <a href="mailto:kubachabera@gmail.com">kubachabera@gmail.com</a>
+                </div>
+                
+                <div class="contact-info-item">
+                    <h4>Sociální sítě</h4>
+                    <p>Nejrychleji odpovídám na Instagramu.</p>
+                    <a href="https://instagram.com/jchabera.png" target="_blank" rel="noopener noreferrer">@jchabera.png</a>
+                </div>
+            </div>
+            
+        </section>
+        
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Jakub Chabera. Všechna práva vyhrazena.</p>
+        <p style="color: var(--secondary-text); font-size: 0.8rem; margin-top: 10px;">
+            Postaveno s vášní
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
