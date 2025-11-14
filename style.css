@@ -179,7 +179,7 @@ nav a:hover::after {
     justify-content: center;
     text-align: center;
     position: relative; 
-    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photos/bmwM2/_DSC6446-2.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photos/bmwM2-web/_DSC6446-2.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
