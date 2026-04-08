@@ -87,6 +87,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- BEFORE / AFTER SLIDER ---
+    const beforeAfterBlocks = document.querySelectorAll('.before-after');
+    beforeAfterBlocks.forEach(block => {
+        const range = block.querySelector('.before-after-range');
+        if (!range) return;
+
+        const start = block.getAttribute('data-start');
+        const initial = start ? Number(start) : Number(range.value);
+        const clamped = Number.isFinite(initial) ? Math.max(0, Math.min(100, initial)) : 50;
+        range.value = String(clamped);
+        block.style.setProperty('--pos', `${clamped}%`);
+
+        range.addEventListener('input', (e) => {
+            const value = Number(e.target.value);
+            block.style.setProperty('--pos', `${value}%`);
+        });
+    });
+
 
     // --- KÓD PRO LOADING SCREEN (A FANCYBOX) ---
     const loadingScreen = document.getElementById('loading-screen');
