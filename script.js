@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     customVideoPlayers.forEach(player => {
         const video = player.querySelector('video');
         const playOverlay = player.querySelector('.play-overlay');
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         
         playOverlay.addEventListener('click', () => {
             if (video.paused) {
@@ -72,6 +73,18 @@ document.addEventListener('DOMContentLoaded', () => {
             playOverlay.classList.remove('hidden');
             video.controls = false;
         });
+
+        // Když uživatel pauzne (např. přes ovládání), vrať overlay zpět.
+        video.addEventListener('pause', () => {
+            if (video.currentTime > 0 && !video.ended) {
+                playOverlay.classList.remove('hidden');
+            }
+        });
+
+        // Pokud uživatel preferuje méně pohybu, nepouštěj autoplay/loop chování agresivně.
+        if (reduceMotion) {
+            video.loop = false;
+        }
     });
 
 

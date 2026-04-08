@@ -7,6 +7,11 @@
     --accent-color: #FFFFFF;
     --shadow-light: rgba(0, 0, 0, 0.3);
     --shadow-strong: rgba(0, 0, 0, 0.6);
+    --radius: 12px;
+    --max-width: 1200px;
+    --container-pad: 5%;
+    --section-pad-y: 96px;
+    --header-h: 74px;
 }
 
 * {
@@ -27,9 +32,14 @@ body {
     overscroll-behavior-y: contain;
     overflow-x: hidden;
     
-    /* === PŮVODNÍ JEMNÝ TEČKOVANÝ VZOR === */
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-41c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm63 52c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-58-41c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm66 31c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-34-4c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-20 44c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm37-31c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-14-18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7z' fill='%23222' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
-    background-attachment: fixed; /* Můžeme nechat, ať se nehýbe při scrollu */
+    /* === POZADÍ (clean, bez vzoru) === */
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.22) 100%);
+    background-attachment: fixed;
+    background-size: auto;
+}
+
+main {
+    display: block;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -45,9 +55,13 @@ p {
 }
 
 section {
-    padding: 80px 5%;
-    max-width: 1300px;
+    padding: var(--section-pad-y) var(--container-pad);
+    max-width: var(--max-width);
     margin: 0 auto;
+}
+
+section[id] {
+    scroll-margin-top: calc(var(--header-h) + 16px);
 }
 
 .reveal-on-scroll {
@@ -109,14 +123,14 @@ body.loading > *:not(#loading-screen) {
 /* --- 2. NAVIGACE --- */
 header {
     width: 100%;
-    padding: 20px 5%;
+    padding: 18px var(--container-pad);
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: fixed;
     top: 0;
     z-index: 100;
-    background-color: rgba(18, 18, 18, 0.8);
+    background-color: rgba(18, 18, 18, 0.75);
     backdrop-filter: blur(10px);
 }
 
@@ -133,7 +147,7 @@ header {
 }
 
 .logo img {
-    height: 35px; /* Nastavíme pevnou výšku loga */
+    height: 34px; /* Nastavíme pevnou výšku loga */
     width: auto; /* Šířka se přizpůsobí automaticky */
     display: block; /* Odstraníme nežádoucí mezery pod obrázkem */
 }
@@ -153,6 +167,7 @@ nav a {
     color: var(--primary-text);
     text-decoration: none;
     font-weight: 600;
+    opacity: 0.92;
     position: relative;
     padding-bottom: 5px;
 }
@@ -179,12 +194,12 @@ nav a:hover::after {
     justify-content: center;
     text-align: center;
     position: relative; 
-    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photos/bmwM2-web/_DSC6446-2.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('photos/M3cs/_DSC7720.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     max-width: none;
-    padding: 80px 0 0 0;
+    padding: var(--header-h) 0 0 0;
 }
 
 .hero h1 {
@@ -229,21 +244,29 @@ nav a:hover::after {
 /* --- 4. PORTFOLIO (GALERIE) --- */
 .portfolio h2 {
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 40px;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    margin-bottom: 44px;
 }
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
 }
 .card {
     background-color: var(--surface-color);
-    border-radius: 8px;
+    border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: 0 10px 20px var(--shadow-light);
+    box-shadow: 0 10px 22px var(--shadow-light);
     text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.06);
+    transform: translateZ(0);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 42px rgba(0,0,0,0.55);
+    border-color: rgba(255,255,255,0.10);
 }
 .card:hover .card-content h3,
 .card:hover .card-content p {
@@ -256,7 +279,7 @@ nav a:hover::after {
 .card-image-container {
     position: relative; /* Nutné pro absolutní pozicování obrázků */
     width: 100%;
-    height: 250px; /* Stejná výška jako byla u .card img */
+    height: 260px;
     background-color: var(--surface-color); /* Barva pro případ pomalého načtení */
 }
 
@@ -295,8 +318,8 @@ nav a:hover::after {
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 .card:hover .card-content {
-    background-color: #2a2a2a;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    background-color: rgba(255,255,255,0.03);
+    box-shadow: none;
 }
 .card-content h3 {
     font-size: 1.5rem;
@@ -312,21 +335,24 @@ nav a:hover::after {
 /* --- 5. SEKCE O MNĚ A VÝBAVA --- */
 .about-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 40px;
-    align-items: end; 
+    grid-template-columns: minmax(240px, 360px) 1fr;
+    gap: 44px;
+    align-items: center; 
 }
 
 .about-grid img {
     width: 100%;
-    border-radius: 8px;
+    height: 460px;
+    border-radius: var(--radius);
     object-fit: cover;
+    object-position: center 35%;
     box-shadow: 0 10px 20px var(--shadow-light);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .about-content h2 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
+    font-size: clamp(2.1rem, 3.2vw, 2.8rem);
+    margin-bottom: 18px;
 }
 .gear-grid {
     display: grid;
@@ -337,9 +363,10 @@ nav a:hover::after {
 .gear-card {
     background-color: var(--surface-color);
     padding: 25px;
-    border-radius: 8px;
+    border-radius: var(--radius);
     box-shadow: 0 5px 15px var(--shadow-light);
     border-left: 3px solid var(--accent-color);
+    border: 1px solid rgba(255,255,255,0.06);
 }
 .gear-card h4 {
     font-size: 1.2rem;
@@ -351,7 +378,7 @@ nav a:hover::after {
 
 .video-section h2 {
     text-align: center;
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 3vw, 2.6rem);
     margin-bottom: 50px;
 }
 .video-showcase {
@@ -420,7 +447,7 @@ nav a:hover::after {
 .custom-video-player {
     position: relative;
     background-color: #000;
-    border-radius: 8px;
+    border-radius: var(--radius);
     overflow: hidden;
     box-shadow: 0 10px 20px var(--shadow-light);
     aspect-ratio: 9 / 16;
@@ -430,6 +457,7 @@ nav a:hover::after {
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 .custom-video-player video {
     width: 100%;
@@ -585,6 +613,9 @@ footer {
     .about-grid {
         grid-template-columns: 1fr;
     }
+    .about-grid img {
+        height: 360px;
+    }
     .gear-grid {
         grid-template-columns: 1fr;
     }
@@ -626,7 +657,7 @@ footer {
     padding-bottom: 40px;
 }
 .gallery-detail-header h1 {
-    font-size: 3rem;
+    font-size: clamp(2.2rem, 3.5vw, 3.1rem);
 }
 .gallery-date {
     font-size: 1rem;
@@ -635,20 +666,22 @@ footer {
 }
 .gallery-detail-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
 }
 .gallery-item img {
     width: 100%;
-    height: 500px; /* <-- NOVÉ: Pevná výška pro všechny fotky */
-    object-fit: cover; /* <-- NOVÉ: Ořízne fotku, aby vyplnila prostor (nedeformuje ji) */
+    height: clamp(260px, 44vw, 520px);
+    object-fit: cover;
     display: block;
-    border-radius: 8px;
-    box-shadow: 0 10px 20px var(--shadow-light);
-    transition: transform 0.3s ease;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 22px var(--shadow-light);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .gallery-item img:hover {
     transform: scale(1.02);
+    box-shadow: 0 18px 44px rgba(0,0,0,0.55);
 }
 @media (max-width: 768px) {
     .gallery-detail-grid {
@@ -673,7 +706,7 @@ nav a.active::after {
     padding-bottom: 40px;
 }
 .contact-page-header h1 {
-    font-size: 3rem;
+    font-size: clamp(2.2rem, 3.5vw, 3.1rem);
 }
 .contact-page-header p {
     font-size: 1.1rem;
@@ -687,6 +720,19 @@ nav a.active::after {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 50px;
+}
+.contact-form-container,
+.contact-info-container {
+    background-color: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+}
+.contact-form-container {
+    padding: 28px;
+}
+.contact-info-container {
+    padding: 28px;
 }
 .form-group {
     display: flex;
@@ -703,8 +749,8 @@ nav a.active::after {
 .form-group input,
 .form-group textarea {
     background-color: var(--surface-color);
-    border: 1px solid #333;
-    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
     padding: 15px;
     color: var(--primary-text);
     font-family: 'Poppins', sans-serif;
@@ -729,7 +775,7 @@ nav a.active::after {
     font-weight: 700;
     letter-spacing: 1px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 15px 30px;
     cursor: pointer;
     text-transform: uppercase;
@@ -742,8 +788,7 @@ nav a.active::after {
     box-shadow: 0 5px 15px var(--shadow-light);
 }
 .contact-info-container {
-    padding-left: 20px;
-    border-left: 2px solid #333;
+    border-left: none;
 }
 .contact-info-container h3 {
     font-size: 2rem;
@@ -851,13 +896,18 @@ nav a.active::after {
 
 .service-card {
     background-color: var(--surface-color);
-    border-radius: 8px;
+    border-radius: var(--radius);
     padding: 40px 30px;
     box-shadow: 0 10px 30px var(--shadow-strong);
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     will-change: transform, box-shadow;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 44px rgba(0,0,0,0.6);
 }
 
 
@@ -918,7 +968,7 @@ nav a.active::after {
     background-color: var(--accent-color);
     color: var(--bg-color);
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 10px;
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
     transition: background-color 0.3s ease;
@@ -946,7 +996,7 @@ nav a.active::after {
     text-align: center;
     background-color: var(--surface-color);
     padding: 40px;
-    border-radius: 8px;
+    border-radius: var(--radius);
     margin: 80px auto;
     max-width: 800px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
@@ -964,7 +1014,7 @@ nav a.active::after {
     background-color: var(--accent-color);
     color: var(--bg-color);
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 10px;
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
 }
