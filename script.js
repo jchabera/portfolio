@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const beforeAfterBlocks = document.querySelectorAll('.before-after');
     beforeAfterBlocks.forEach(block => {
         const range = block.querySelector('.before-after-range');
+        const images = block.querySelector('.before-after-images');
         if (!range) return;
 
         const start = block.getAttribute('data-start');
@@ -103,6 +104,69 @@ document.addEventListener('DOMContentLoaded', () => {
             const value = Number(e.target.value);
             block.style.setProperty('--pos', `${value}%`);
         });
+
+        if (!images) return;
+
+        const setFromClientX = (clientX) => {
+            const rect = images.getBoundingClientRect();
+            const x = Math.max(rect.left, Math.min(rect.right, clientX));
+            const pct = ((x - rect.left) / rect.width) * 100;
+            const value = Math.round(Math.max(0, Math.min(100, pct)));
+            range.value = String(value);
+            block.style.setProperty('--pos', `${value}%`);
+        };
+
+        // Tap/click anywhere on the photo should jump the slider there (mobile + desktop).
+        const onPointerDown = (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            e.preventDefault();
+            setFromClientX(e.clientX);
+            images.setPointerCapture?.(e.pointerId);
+
+            const onMove = (ev) => {
+                setFromClientX(ev.clientX);
+            };
+            const onUp = (ev) => {
+                images.releasePointerCapture?.(ev.pointerId);
+                window.removeEventListener('pointermove', onMove);
+                window.removeEventListener('pointerup', onUp);
+                window.removeEventListener('pointercancel', onUp);
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+        };
+
+        // Prefer Pointer Events when available.
+        if (window.PointerEvent) {
+            images.addEventListener('pointerdown', onPointerDown);
+        } else {
+            // Fallback for older browsers.
+            images.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                setFromClientX(e.clientX);
+                const onMove = (ev) => setFromClientX(ev.clientX);
+                const onUp = () => {
+                    window.removeEventListener('mousemove', onMove);
+                    window.removeEventListener('mouseup', onUp);
+                };
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onUp);
+            });
+            images.addEventListener('touchstart', (e) => {
+                const t = e.touches && e.touches[0];
+                if (!t) return;
+                e.preventDefault();
+                setFromClientX(t.clientX);
+            }, { passive: false });
+            images.addEventListener('touchmove', (e) => {
+                const t = e.touches && e.touches[0];
+                if (!t) return;
+                e.preventDefault();
+                setFromClientX(t.clientX);
+            }, { passive: false });
+        }
     });
 
 
