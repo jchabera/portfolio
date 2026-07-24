@@ -575,7 +575,9 @@ section { padding: 8rem 3rem; }
     }
 
     .huge-email {
-        word-break: break-all; 
+        font-size: clamp(1.2rem, 5.5vw, 2rem);
+        word-break: normal; 
+        margin: 1rem 0 3rem 0; 
     }
 
 }
