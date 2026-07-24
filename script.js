@@ -1,20 +1,22 @@
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical',
-        gestureDirection: 'vertical',
-        smooth: true
+    document.querySelectorAll('.nav-links a, .nav-contact').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                gsap.to(window, {
+                    scrollTo: { y: targetElement, offsetY: 80 },
+                    duration: 1.5,
+                    ease: "power3.inOut"
+                });
+            }
+        });
     });
-
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
 
     const tl = gsap.timeline();
 
@@ -52,6 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const projectData = {
+        e39: {
+            title: 'BMW E39',
+            desc: 'Klasické linie a nadčasový charakter v atmosférickém podání.',
+            images: [
+                'photos/e39/e39cover.jpg'
+            ]
+        },
         m3cs: {
             title: 'BMW M3 CS',
             desc: 'Editorial vizuální série zaměřená na surovou dynamiku, detaily karbonových komponentů a kontrastní stíny.',
@@ -73,19 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'BMW M2 Black',
             desc: 'Série snímků podtrhující temné tóny a ostré hrany modelu M2.',
             images: ['photos/M2black/_DSC7568.jpg', 'photos/M2black/_DSC7676.jpg']
-        },
-        corolla: {
-            title: 'Corolla GR',
-            desc: 'Exteriérová série pořízená během západu slunce zdůrazňující agresivní profil vozidla.',
-            images: ['photos/corollaGR/_DSC6640.jpg', 'photos/corollaGR/_DSC6645.jpg', 'photos/corollaGR/_DSC6650.jpg']
         }
     };
 
     const modal = document.getElementById('project-modal');
     
     if (modal) {
-        modal.setAttribute('data-lenis-prevent', 'true');
-        
         const modalTitle = modal.querySelector('.modal-title');
         const modalDesc = modal.querySelector('.modal-desc');
         const modalGallery = modal.querySelector('.modal-gallery');
@@ -108,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     document.body.style.overflow = 'hidden';
-                    lenis.stop();
                     
                     gsap.to(modal, { autoAlpha: 1, duration: 0.4, ease: 'power3.out' });
 
@@ -126,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     autoAlpha: 0, duration: 0.4, ease: 'power3.inOut',
                     onComplete: () => {
                         document.body.style.overflow = '';
-                        lenis.start();
                         modalGallery.innerHTML = '';
                     }
                 });
