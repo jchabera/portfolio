@@ -100,6 +100,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 'photos/e39/_DSC7975.jpg'
             ]
         },
+        yarisgr: {
+            title: 'Toyota Yaris GR',
+            desc: 'Série zaměřená na surovou rallye DNA a agresivní design kompaktní bestie.',
+            images: [
+                'photos/yarisgr/_DSC7979.jpg',
+                'photos/yarisgr/_DSC7985.jpg',
+                'photos/yarisgr/_DSC7991.jpg',
+                'photos/yarisgr/_DSC7996.jpg',
+                'photos/yarisgr/_DSC8002.jpg',
+                'photos/yarisgr/_DSC8009.jpg',
+                'photos/yarisgr/_DSC8013.jpg',
+                'photos/yarisgr/_DSC8018.jpg',
+                'photos/yarisgr/_DSC8022.jpg',
+                'photos/yarisgr/_DSC8023.jpg',
+                'photos/yarisgr/_DSC8025.jpg',
+                'photos/yarisgr/_DSC8034.jpg',
+                'photos/yarisgr/_DSC8038.jpg',
+                'photos/yarisgr/_DSC8046.jpg',
+                'photos/yarisgr/_DSC8048.jpg',
+                'photos/yarisgr/_DSC8052.jpg',
+                'photos/yarisgr/_DSC8071.jpg',
+                'photos/yarisgr/_DSC8074.jpg',
+                'photos/yarisgr/_DSC8079.jpg'
+            ]
+        },
         m3cs: {
             title: 'BMW M3 CS',
             desc: 'Editorial vizuální série zaměřená na surovou dynamiku, detaily karbonových komponentů a kontrastní stíny.',
