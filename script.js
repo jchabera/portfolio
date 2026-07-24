@@ -1,199 +1,162 @@
-// === Řekneme prohlížeči, ať neobnovuje scroll ===
-if (history.scrollRestoration) {
-    history.scrollRestoration = 'manual';
-}
+gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // === Aktivně posuneme stránku nahoru ===
-    window.scrollTo(0, 0);
-    
-    
-    // --- 2. KÓD PRO ANIMACI PŘI SCROLLOVÁNÍ ---
-    const revealElements = document.querySelectorAll('.reveal-on-scroll');
-    
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observerCallback = (entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    revealElements.forEach(el => {
-        observer.observe(el);
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true
     });
 
-    // === NOVÝ KÓD: TLAČÍTKO ZPĚT NAHORU ===
-    const scrollTopBtn = document.getElementById('back-to-top');
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
 
-    if (scrollTopBtn) {
-        window.addEventListener('scroll', () => {
-            // Zobrazíme tlačítko, pokud jsme odscrollovali více než 400px
-            if (window.scrollY > 400) {
-                scrollTopBtn.classList.add('is-visible');
-            } else {
-                scrollTopBtn.classList.remove('is-visible');
-            }
+    const tl = gsap.timeline();
+
+    tl.to('.loader-text', { yPercent: -100, opacity: 0, duration: 1, ease: 'power4.inOut', delay: 0.2 })
+      .to('.loader', { 
+          yPercent: -100, 
+          duration: 1, 
+          ease: 'power4.inOut',
+          onComplete: () => {
+              const loader = document.querySelector('.loader');
+              if(loader) loader.style.display = 'none';
+          }
+      }, "-=0.5")
+      .from('.hero-title .line', { y: 100, opacity: 0, stagger: 0.1, duration: 1.2, ease: 'power4.out' }, "-=0.5")
+      .from('.hero-bg img', { scale: 1.1, duration: 2, ease: 'power3.out' }, "-=1.5");
+
+    gsap.to('.hero-bg img', {
+        yPercent: 20,
+        ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    gsap.utils.toArray('.project').forEach(item => {
+        gsap.from(item, {
+            y: 60, opacity: 0, duration: 1, ease: 'power3.out',
+            scrollTrigger: { trigger: item, start: 'top 85%' }
         });
+    });
+
+    gsap.utils.toArray('.reel-card').forEach(item => {
+        gsap.from(item, {
+            y: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
+            scrollTrigger: { trigger: item, start: 'top 90%' }
+        });
+    });
+
+    const projectData = {
+        m3cs: {
+            title: 'BMW M3 CS',
+            desc: 'Editorial vizuální série zaměřená na surovou dynamiku, detaily karbonových komponentů a kontrastní stíny.',
+            images: [
+                'photos/M3cs/_DSC7708.jpg', 'photos/M3cs/_DSC7720.jpg', 'photos/M3cs/_DSC7731.jpg',
+                'photos/M3cs/_DSC7744.jpg', 'photos/M3cs/_DSC7747.jpg', 'photos/M3cs/_DSC7755.jpg',
+                'photos/M3cs/_DSC7771.jpg', 'photos/M3cs/_DSC7780.jpg', 'photos/M3cs/_DSC7781.jpg',
+                'photos/M3cs/_DSC7792.jpg', 'photos/M3cs/_DSC7794.jpg', 'photos/M3cs/_DSC7796.jpg',
+                'photos/M3cs/_DSC7799.jpg', 'photos/M3cs/_DSC7803.jpg', 'photos/M3cs/_DSC7804.jpg',
+                'photos/M3cs/_DSC7805.jpg', 'photos/M3cs/_DSC7806.jpg', 'photos/M3cs/_DSC7809.jpg',
+                'photos/M3cs/_DSC7810.jpg', 'photos/M3cs/_DSC7812.jpg', 'photos/M3cs/_DSC7814.jpg',
+                'photos/M3cs/_DSC7818.jpg', 'photos/M3cs/_DSC7825.jpg', 'photos/M3cs/_DSC7827.jpg',
+                'photos/M3cs/_DSC7837.jpg', 'photos/M3cs/_DSC7848.jpg', 'photos/M3cs/_DSC7853.jpg',
+                'photos/M3cs/_DSC7858.jpg', 'photos/M3cs/_DSC7859.jpg', 'photos/M3cs/_DSC7863.jpg',
+                'photos/M3cs/_DSC7865.jpg', 'photos/M3cs/_DSC7866.jpg', 'photos/M3cs/_DSC7868.jpg'
+            ]
+        },
+        m2black: {
+            title: 'BMW M2 Black',
+            desc: 'Série snímků podtrhující temné tóny a ostré hrany modelu M2.',
+            images: ['photos/M2black/_DSC7568.jpg', 'photos/M2black/_DSC7676.jpg']
+        },
+        corolla: {
+            title: 'Corolla GR',
+            desc: 'Exteriérová série pořízená během západu slunce zdůrazňující agresivní profil vozidla.',
+            images: ['photos/corollaGR/_DSC6640.jpg', 'photos/corollaGR/_DSC6645.jpg', 'photos/corollaGR/_DSC6650.jpg']
+        }
+    };
+
+    const modal = document.getElementById('project-modal');
+    
+    if (modal) {
+        modal.setAttribute('data-lenis-prevent', 'true');
+        
+        const modalTitle = modal.querySelector('.modal-title');
+        const modalDesc = modal.querySelector('.modal-desc');
+        const modalGallery = modal.querySelector('.modal-gallery');
+        const closeBtn = modal.querySelector('.modal-close');
+
+        document.querySelectorAll('.project[data-gallery]').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.getAttribute('data-gallery');
+                const data = projectData[id];
+                
+                if (data) {
+                    modalTitle.textContent = data.title;
+                    modalDesc.textContent = data.desc;
+                    modalGallery.innerHTML = '';
+                    
+                    data.images.forEach(src => {
+                        const img = document.createElement('img');
+                        img.src = src;
+                        modalGallery.appendChild(img);
+                    });
+
+                    document.body.style.overflow = 'hidden';
+                    lenis.stop();
+                    
+                    gsap.to(modal, { autoAlpha: 1, duration: 0.4, ease: 'power3.out' });
+
+                    setTimeout(() => {
+                        const newImages = modalGallery.querySelectorAll('img');
+                        gsap.to(newImages, { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'power3.out' });
+                    }, 100);
+                }
+            });
+        });
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                gsap.to(modal, {
+                    autoAlpha: 0, duration: 0.4, ease: 'power3.inOut',
+                    onComplete: () => {
+                        document.body.style.overflow = '';
+                        lenis.start();
+                        modalGallery.innerHTML = '';
+                    }
+                });
+            });
+        }
     }
 
-    
-    // --- KÓD PRO CUSTOM VIDEO PLAYER ---
-    const customVideoPlayers = document.querySelectorAll('.custom-video-player');
+    const baSlider = document.querySelector('.ba-slider');
+    if (baSlider) {
+        const baBefore = document.querySelector('.ba-before');
+        const baHandle = document.querySelector('.ba-handle');
+        let isDown = false;
 
-    customVideoPlayers.forEach(player => {
-        const video = player.querySelector('video');
-        const playOverlay = player.querySelector('.play-overlay');
-        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        
-        playOverlay.addEventListener('click', () => {
-            if (video.paused) {
-                video.play();
-                playOverlay.classList.add('hidden');
-                video.muted = false;
-                video.controls = true;
-            } else {
-                video.pause();
-                playOverlay.classList.remove('hidden');
-                video.controls = false;
-            }
-        });
+        baSlider.addEventListener('mousedown', () => isDown = true);
+        window.addEventListener('mouseup', () => isDown = false);
+        baSlider.addEventListener('touchstart', () => isDown = true);
+        window.addEventListener('touchend', () => isDown = false);
 
-        video.addEventListener('ended', () => {
-            playOverlay.classList.remove('hidden');
-            video.controls = false;
-        });
-
-        // Když uživatel pauzne (např. přes ovládání), vrať overlay zpět.
-        video.addEventListener('pause', () => {
-            if (video.currentTime > 0 && !video.ended) {
-                playOverlay.classList.remove('hidden');
-            }
-        });
-
-        // Pokud uživatel preferuje méně pohybu, nepouštěj autoplay/loop chování agresivně.
-        if (reduceMotion) {
-            video.loop = false;
-        }
-    });
-
-    // --- BEFORE / AFTER SLIDER ---
-    const beforeAfterBlocks = document.querySelectorAll('.before-after');
-    beforeAfterBlocks.forEach(block => {
-        const range = block.querySelector('.before-after-range');
-        const images = block.querySelector('.before-after-images');
-        if (!range) return;
-
-        const start = block.getAttribute('data-start');
-        const initial = start ? Number(start) : Number(range.value);
-        const clamped = Number.isFinite(initial) ? Math.max(0, Math.min(100, initial)) : 50;
-        range.value = String(clamped);
-        block.style.setProperty('--pos', `${clamped}%`);
-
-        range.addEventListener('input', (e) => {
-            const value = Number(e.target.value);
-            block.style.setProperty('--pos', `${value}%`);
-        });
-
-        if (!images) return;
-
-        const setFromClientX = (clientX) => {
-            const rect = images.getBoundingClientRect();
-            const x = Math.max(rect.left, Math.min(rect.right, clientX));
-            const pct = ((x - rect.left) / rect.width) * 100;
-            const value = Math.round(Math.max(0, Math.min(100, pct)));
-            range.value = String(value);
-            block.style.setProperty('--pos', `${value}%`);
+        const moveSlider = (e) => {
+            if (!isDown) return;
+            const rect = baSlider.getBoundingClientRect();
+            let x = (e.pageX || (e.touches && e.touches[0].pageX)) - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const percent = (x / rect.width) * 100;
+            
+            baBefore.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+            baHandle.style.left = `${percent}%`;
         };
 
-        // Tap/click anywhere on the photo should jump the slider there (mobile + desktop).
-        const onPointerDown = (e) => {
-            if (e.pointerType === 'mouse' && e.button !== 0) return;
-            e.preventDefault();
-            setFromClientX(e.clientX);
-            images.setPointerCapture?.(e.pointerId);
-
-            const onMove = (ev) => {
-                setFromClientX(ev.clientX);
-            };
-            const onUp = (ev) => {
-                images.releasePointerCapture?.(ev.pointerId);
-                window.removeEventListener('pointermove', onMove);
-                window.removeEventListener('pointerup', onUp);
-                window.removeEventListener('pointercancel', onUp);
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-        };
-
-        // Prefer Pointer Events when available.
-        if (window.PointerEvent) {
-            images.addEventListener('pointerdown', onPointerDown);
-        } else {
-            // Fallback for older browsers.
-            images.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                setFromClientX(e.clientX);
-                const onMove = (ev) => setFromClientX(ev.clientX);
-                const onUp = () => {
-                    window.removeEventListener('mousemove', onMove);
-                    window.removeEventListener('mouseup', onUp);
-                };
-                window.addEventListener('mousemove', onMove);
-                window.addEventListener('mouseup', onUp);
-            });
-            images.addEventListener('touchstart', (e) => {
-                const t = e.touches && e.touches[0];
-                if (!t) return;
-                e.preventDefault();
-                setFromClientX(t.clientX);
-            }, { passive: false });
-            images.addEventListener('touchmove', (e) => {
-                const t = e.touches && e.touches[0];
-                if (!t) return;
-                e.preventDefault();
-                setFromClientX(t.clientX);
-            }, { passive: false });
-        }
-    });
-
-
-    // --- KÓD PRO LOADING SCREEN (A FANCYBOX) ---
-    const loadingScreen = document.getElementById('loading-screen');
-    const body = document.body;
-
-    // 'load' event počká, až se načtou VŠECHNY skripty (včetně Fancyboxu)
-    window.addEventListener('load', () => {
-
-        // === AKTIVACE FANCYBOXU (PŘESUNUTO SEM) ===
-        // Teď už máme jistotu, že Fancybox existuje
-        if (typeof Fancybox !== 'undefined') {
-            Fancybox.bind("[data-fancybox]", {
-              loop: true,   // Nekonečné listování
-              preload: 0  // Nenačítat fotky dopředu (proti sekání)
-            });
-        }
-        // === KONEC PŘESUNUTÉHO KÓDU ===
-
-
-        // Skryjeme loading screen
-        body.classList.remove('loading'); 
-        loadingScreen.classList.add('hidden');
-        loadingScreen.addEventListener('transitionend', () => {
-            loadingScreen.remove();
-        });
-    });
-
+        window.addEventListener('mousemove', moveSlider);
+        window.addEventListener('touchmove', moveSlider);
+    }
 });
