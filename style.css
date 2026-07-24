@@ -390,6 +390,7 @@ section { padding: 8rem 3rem; }
 .huge-email:hover { opacity: 0.6; }
 
 .socials a {
+    display: inline-block; /* TOTO PŘIDEJ */
     color: var(--text);
     text-decoration: none;
     text-transform: uppercase;
@@ -563,4 +564,18 @@ section { padding: 8rem 3rem; }
     .project-details { left: 1.5rem; bottom: 1.5rem; }
     .project-details h2 { font-size: 2.2rem; }
     .modal-gallery { grid-template-columns: 1fr; gap: 1rem; }
+
+    .socials a {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.85rem;
+        display: block;    
+        max-width: 250px;    
+        margin: 0 auto;       
+        white-space: nowrap;  
+    }
+
+    .huge-email {
+        word-break: break-all; 
+    }
+
 }
